@@ -1,6 +1,8 @@
 import { Component, inject, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { SupabaseService } from '../../shared/service/supabase.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
 import shuffle from 'lodash/shuffle';
 
 @Component({
@@ -13,10 +15,40 @@ import shuffle from 'lodash/shuffle';
 export class Exercise1 implements OnInit {
   supabase = inject(SupabaseService);
   words: any[] = [];
+  skippedList:string[] = [];
   index = 0;
   done = false;
   ngZone = inject(NgZone);
   cDR = inject(ChangeDetectorRef);
+  router = inject(Router)
+
+
+  skip(){
+    this.skippedList = [
+      ...this.skippedList,
+      this.words[this.index].original
+    ]
+  }
+
+  finish(){
+    var list = this.skippedList.map((r) => {
+      var f =  this.words.filter((w) => {
+        return w.original === r
+      })
+
+      return f[0]
+    })
+
+    var state = {
+      state:{
+        list:shuffle(list)
+      }
+    }
+
+    this.router.navigate(
+      ['/result'],state
+    );
+  }
   
   async ngOnInit() {
     try { 
