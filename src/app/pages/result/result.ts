@@ -2,39 +2,52 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
+import shuffle from 'lodash/shuffle';
+
+
 @Component({
   selector: 'app-result',
   imports: [CommonModule],
   templateUrl: './result.html',
   styleUrl: './result.css',
 })
-export class Result {
-  state = window.history.state.list;
+export class Result implements OnInit {
+  state = window.history.state;
 
-  tmpList:any[] = []
+  answers:any[] = []
 
-  searchResult:any[] = []
+  onSelected(e:any,r:string,idx:number){
+      if(e.target.value === r){
+        this.state.skipped = this.state.skipped.filter((s:any,i:number) => {
+					return i > 0
+				})
 
-  filter(e:any){
-    if(this.filter.length > 0){
-      var [filtered] = this.state.filter((x:any) => {
-        return x.romaji === e.target.value
-      })
-      
+				this.answers = this.answers.filter((f) => {
+					return f.romaji != r
+				})
 
-      if(filtered){
-        this.searchResult = [
-          filtered
-        ]
+				this.answers = shuffle(
+					[
+						...this.answers,
+						this.state.skipped[0]
+					]
+				)
       }
-      else{
-        this.searchResult = []
-      }
-
-    }
-    else{
     }
 
+  ngOnInit(){
+    const words = shuffle(this.state.all)
+    this.answers = shuffle([
+      words[words.length -  1],
+      words[words.length -  2],
+      words[words.length -  3],
+      words[words.length -  4],
+      words[words.length -  5],
+      words[words.length -  6],
+      words[words.length -  7],
+      words[words.length -  8],
+      words[words.length -  9],     
+      this.state.skipped[0]
+    ])
   }
-
 }

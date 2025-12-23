@@ -16,21 +16,22 @@ export class Exercise1 implements OnInit {
   supabase = inject(SupabaseService);
   words: any[] = [];
   skippedList:string[] = [];
+  answers:any[] = [];
   index = 0;
   done = false;
   ngZone = inject(NgZone);
   cDR = inject(ChangeDetectorRef);
   router = inject(Router)
 
-
-  skip(){
+  skip(index:number){
     this.skippedList = [
       ...this.skippedList,
-      this.words[this.index].original
+      this.words[index].original
     ]
   }
 
   finish(){
+    
     var list = this.skippedList.map((r) => {
       var f =  this.words.filter((w) => {
         return w.original === r
@@ -39,9 +40,14 @@ export class Exercise1 implements OnInit {
       return f[0]
     })
 
+    var words = this.words.filter((w,index) => {
+      return index > this.words.length - 99
+    })
+
     var state = {
       state:{
-        list:shuffle(list)
+        skipped:shuffle(list),
+        all:words
       }
     }
 
@@ -53,7 +59,7 @@ export class Exercise1 implements OnInit {
   async ngOnInit() {
     try { 
       const r = await this.supabase.getWords()
-      this.words = shuffle(r)
+      this.words = shuffle(r);
       this.cDR.detectChanges()
     } 
     catch (e) {

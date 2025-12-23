@@ -1,21 +1,24 @@
 <div class="bg-gray-900 h-screen flex flex-col justify-center items-center gap-3">
-  <div class="bg-black rounded-md h-3/6 w-5/6 flex flex-col sm:flex sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-white">
-    <div *ngIf="index>0" class="flex flex-col gap-3 flex flex-1 flex flex-col justify-center items-center">
+  <div class="bg-black rounded-md relative h-3/6 w-5/6 flex flex-col sm:flex sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-white">
+    <div (click)="skip(index-1)" *ngIf="index>0" class="flex flex-col gap-3 flex flex-1 flex flex-col justify-center items-center">
       <span class="text-white text-6xl font-bold text-white" ngClass="{{skippedList.includes(words[index-1].original) ? 'p-3 bg-red-900 rounded-md':''}}">{{words[index-1].original}}</span>
       <span class="text-white">{{words[index-1].hiragana}} ({{words[index-1].romaji}})</span>
       <span class="text-white">{{words[index-1].mean}}</span>
-
     </div>
-    <div (click)="skip()" class="flex flex-1 flex flex-col justify-center items-center">
+    <div (click)="skip(index)" class="flex flex-1 flex flex-col justify-center items-center">
       <span class="text-6xl font-bold text-white" ngClass="{{skippedList.includes(words[index].original) ? 'p-3 bg-red-900 rounded-md':''}}">{{words[index].original}}</span>
     </div>
+
+    <span class="text-white font-bold absolute right-6 top-6">
+      {{index+1}} <span class="text-red-900">({{skippedList.length}})</span>
+    </span>
   </div>
   <div class="w-5/6 flex flex-row gap-3 justify-between">
     <button (click)="index= index > 0 ? index-1 : words.length-1" class="rounded-full bg-black text-white p-3 flex-1">
-     prev
+      prev
     </button>
 		<button (click)="index= index < words.length -1 ? index+1: 0" class= "rounded-full bg-black text-white p-3 flex-1">
-     next
+      next
     </button>
 		<button (click)="finish()" class="rounded-full bg-black text-white p-3 flex-1">
       res
